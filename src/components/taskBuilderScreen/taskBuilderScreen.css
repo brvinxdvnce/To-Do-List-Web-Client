@@ -1,0 +1,15 @@
+.taskBuilder {
+    height: 60%;
+    width: 40%;
+    background-color: rgb(30, 30, 30);
+    z-index: 1000;
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    border: gray solid 2px;
+}
