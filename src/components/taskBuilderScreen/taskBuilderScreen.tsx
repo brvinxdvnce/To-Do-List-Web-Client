@@ -27,7 +27,7 @@ export const TaskBuilderScreen = ({
             <div>
                 <h2>{task?  "Edit task" : "Create task" }</h2>
                 
-                <button onClick={()=> closeBuilder()}>❌</button>
+                <button onClick={()=> closeBuilder(title, description)}>❌</button>
             </div>
             <label htmlFor="title" >Title:</label>
             <input 
