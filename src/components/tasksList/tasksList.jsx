@@ -16,7 +16,7 @@ export const TasksList = () => {
             .catch((error) => console.error("Error fetching tasks:", error));
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         try{
             localStorage.setItem('tasks', JSON.stringify(tasks, null, 2));
             console.clear();
@@ -76,7 +76,7 @@ export const TasksList = () => {
         <div className='tasks-workspace-container'>
             <button 
                 className='create-button'
-                onClick = {() => openBuilder(tasks? Math.max(...tasks.map(task => task.id)) + 1 : 1)}
+                onClick = {() => openBuilder()}
             >
                 +
             </button>
@@ -94,8 +94,8 @@ export const TasksList = () => {
                         description = {task.description}
                         isCompleted = {task.isCompleted}
                         changeTaskCompleteState = {changeTaskState}
-                        onDelete={deleteTask}
-                        openBuilder={openBuilder}
+                        onDelete    = {deleteTask}
+                        openBuilder = {openBuilder}
                         />
                     ))}
                 </ul>
