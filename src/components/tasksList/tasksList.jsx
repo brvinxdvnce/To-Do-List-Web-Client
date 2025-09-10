@@ -4,28 +4,30 @@ import { TaskBuilderScreen } from '../taskBuilderScreen/taskBuilderScreen';
 import './tasksList.css';
 
 export const TasksList = () => {
-    
-    const [tasks, setTasks] = useState([]);
+
+    const [tasks, setTasks] = useState(() => 
+        JSON.parse(localStorage.getItem('tasks')) || []
+    );
+
     const [builderIsOpen, setBuilderState] = useState(false);
     const [editingTaskID, setEdigingTaskID] = useState(null);
 
     useEffect(() => {
-        fetch("/data/tasks.json")
-            .then((response) => response.json())
-            .then((data) => setTasks(data))
-            .catch((error) => console.error("Error fetching tasks:", error));
+        if (JSON.parse(localStorage.getItem('tasks')).length > 0) {
+            setTasks(JSON.parse(localStorage.getItem('tasks')));
+        }
+        else {
+            fetch("/data/tasks.json")
+                .then((response) => response.json())
+                .then((data) => setTasks(data))
+                .catch((error) => console.error("Error fetching tasks:", error));
+        }
     }, []);
 
     useEffect(() => {
-        try{
-            localStorage.setItem('tasks', JSON.stringify(tasks, null, 2));
-            console.clear();
-            console.log('Tasks saved to json:\n', localStorage.getItem('tasks'));
-        }
-        catch(e) {
-            console.error("Error saving tasks to localStorage:", e);
-        }
-        
+        localStorage.setItem('tasks', JSON.stringify(tasks, null, 2));
+        console.clear();
+        console.log('Tasks saved to json:\n', localStorage.getItem('tasks')); 
     }, [tasks]); 
 
     const changeTaskState = (id) => {

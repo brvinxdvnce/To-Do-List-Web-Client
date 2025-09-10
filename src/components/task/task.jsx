@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import './task.css';
 
 export const Task = (

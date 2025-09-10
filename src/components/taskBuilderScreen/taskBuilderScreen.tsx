@@ -42,9 +42,7 @@ export const TaskBuilderScreen = ({
                     type="text"
                     value = {description}
                     onChange={(e) => setDescription(e.target.value)}>
-                
                 </input>
-                
                 <button onClick={() => closeBuilder(title, description)}>✅</button>
             </div>             
         </div>
