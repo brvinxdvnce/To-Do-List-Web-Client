@@ -1,33 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Task } from '../task/task.jsx';
 import { TaskBuilderScreen } from '../taskBuilderScreen/taskBuilderScreen';
 import './tasksList.css';
 
 export const TasksList = () => {
 
-    const [tasks, setTasks] = useState(() => 
-        JSON.parse(localStorage.getItem('tasks')) || []
-    );
-
+    const [tasks, setTasks] = useState([]);
     const [builderIsOpen, setBuilderState] = useState(false);
     const [editingTaskID, setEdigingTaskID] = useState(null);
+    const isInitialLoad = useRef(true);
 
     useEffect(() => {
-        if (JSON.parse(localStorage.getItem('tasks')).length > 0) {
-            setTasks(JSON.parse(localStorage.getItem('tasks')));
-        }
-        else {
-            fetch("/data/tasks.json")
-                .then((response) => response.json())
-                .then((data) => setTasks(data))
-                .catch((error) => console.error("Error fetching tasks:", error));
-        }
+
+        fetch("http://localhost:5292/api/ToDo")
+            .then(res => res.json())
+            .then(data => {
+                setTasks(data);
+                isInitialLoad.current = false;
+            })
+            .catch(console.error);
+
+
+        // if (JSON.parse(localStorage.getItem('tasks')).length > 0) {
+        //     setTasks(JSON.parse(localStorage.getItem('tasks')));
+        // }
+        // else {
+        //     fetch("/data/tasks.json")
+        //         .then((response) => response.json())
+        //         .then((data) => setTasks(data))
+        //         .catch((error) => console.error("Error fetching tasks:", error));
+        //}
     }, []);
 
     useEffect(() => {
-        localStorage.setItem('tasks', JSON.stringify(tasks, null, 2));
-        console.clear();
-        console.log('Tasks saved to json:\n', localStorage.getItem('tasks')); 
+        if (isInitialLoad.current) {
+            return;
+        }
+
+        fetch("http://localhost:5292/api/ToDo/replace_all", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(tasks)
+        })
+            .then(res => res.json())
+            .then(data => console.log("Tasks saved on server:", data))
+            .catch(err => console.error("Error saving tasks:", err));
+
+        // localStorage.setItem('tasks', JSON.stringify(tasks, null, 2));
+        // console.clear();
+        // console.log('Tasks saved to json:\n', localStorage.getItem('tasks')); 
     }, [tasks]); 
 
     const changeTaskState = (id) => {
@@ -102,13 +123,12 @@ export const TasksList = () => {
                     ))}
                 </ul>
             }
-                
+
             <TaskBuilderScreen
                 isOpen={builderIsOpen}
                 closeBuilder={closeBuilder}
                 task = {tasks.find(task => task.id == editingTaskID)}
             ></TaskBuilderScreen>
-            
         </div>
     );
 };
